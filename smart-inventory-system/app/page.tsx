@@ -215,7 +215,11 @@ export default function Page() {
       <div style={{width: '240px', background: '#1a1f2e', borderRight: '1px solid #252d3d', padding: '20px', display: 'flex', flexDirection: 'column', gap: '30px', position: 'fixed', height: '100vh', overflowY: 'auto'}}>
         <div><h2 style={{color: '#3b82f6', fontSize: '20px', fontWeight: 700}}>📦 Inventory</h2></div>
         <nav style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-          {['overview', 'products', 'sales', 'analytics'].map(section => (
+          {(
+            user.role === 'owner'
+            ? ['overview', 'products', 'sales', 'analytics']
+            : ['overview', 'products', 'sales']
+          ).map(section => (
             <button key={section} onClick={() => setCurrentSection(section)} style={{padding: '12px 16px', background: currentSection === section ? '#252d3d' : 'transparent', color: currentSection === section ? '#3b82f6' : '#9ca3af', border: 'none', borderRadius: '6px', cursor: 'pointer', textDecoration: 'none', display: 'block', transition: 'all 0.2s', borderLeft: currentSection === section ? '3px solid #3b82f6' : '3px solid transparent', fontSize: '14px', textTransform: 'capitalize'}}>{section}</button>
           ))}
         </nav>
@@ -245,10 +249,15 @@ export default function Page() {
         </div>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'products' ? 'block' : 'none'}}>
-          <button onClick={() => setShowProductModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ Add Product</button>
+          {user.role === 'owner' && (
+            <button onClick={() => setShowProductModal(true)}> + Add Product </button>)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ Add Product</button>
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Actions</th></tr></thead>
-            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td><td><button onClick={() => deleteProduct(p.id)} style={{padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px'}}>Delete</button></td></tr>)}</tbody>
+            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td><td>{user.role === 'owner' && (
+              <button
+              onClick={() => deleteProduct(p.id)}
+              style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>
+)}</td></tr>)}</tbody>
           </table>
         </div>
 
