@@ -296,7 +296,8 @@ const editProduct = async (product) => {
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
-  totalRevenue: sales.reduce((sum, s) => sum + Number(s.total), 0)
+  totalRevenue: sales.reduce((sum, s) => sum + Number(s.total), 0),
+  lowStock: products.filter(p => Number(p.quantity) < 10).length
 }
 
   if (!user) {
@@ -420,7 +421,7 @@ const editProduct = async (product) => {
           <td>{p.name}</td>
           <td>{p.category}</td>
           <td>${Number(p.price).toFixed(2)}</td>
-          <td>{p.quantity}</td>
+          <td style={{color: Number(p.quantity) < 10 ? '#ef4444' : '#e5e7eb', fontWeight: Number(p.quantity) < 10 ? 'bold' : 'normal'}}>{p.quantity} </td>
 
           <td>
             {user.role === 'owner' && (
