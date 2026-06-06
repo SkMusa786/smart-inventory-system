@@ -44,13 +44,9 @@ export default function Page() {
   }
 
   const logout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('products')
-    localStorage.removeItem('sales')
-    setProducts([])
-    setSales([])
-  }
+  setUser(null)
+  localStorage.removeItem('user')
+}
 
   const addProduct = async (formData) => {
   const newProduct = {
@@ -86,15 +82,6 @@ export default function Page() {
   }
 }
     
-    const updated = [...products]
-    const idx = updated.findIndex(p => p.id === newProduct.id)
-    if (idx >= 0) updated[idx] = newProduct
-    else updated.push(newProduct)
-    
-    setProducts(updated)
-    localStorage.setItem('products', JSON.stringify(updated))
-    setShowProductModal(false)
-  }
 
   const deleteProduct = (id) => {
     if (!confirm('Delete this product?')) return
