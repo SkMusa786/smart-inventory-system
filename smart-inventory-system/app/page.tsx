@@ -12,15 +12,20 @@ export default function Page() {
   const formRef = useRef(null)
 
   // Load data from localStorage on mount
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user')
-    const savedProducts = localStorage.getItem('products')
-    const savedSales = localStorage.getItem('sales')
-    
-    if (savedUser) setUser(JSON.parse(savedUser))
-    if (savedProducts) setProducts(JSON.parse(savedProducts))
-    if (savedSales) setSales(JSON.parse(savedSales))
-  }, [])
+ useEffect(() => {
+  const savedUser = localStorage.getItem('user')
+
+  if (savedUser) {
+    setUser(JSON.parse(savedUser))
+  }
+
+  fetch(
+    'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+  )
+    .then(res => res.json())
+    .then(data => setProducts(data))
+    .catch(err => console.error(err))
+}, [])
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -47,14 +52,39 @@ export default function Page() {
     setSales([])
   }
 
-  const addProduct = (formData) => {
-    const newProduct = {
-      id: formData.get('productId'),
-      name: formData.get('productName'),
-      category: formData.get('productCategory'),
-      price: parseFloat(formData.get('productPrice')),
-      quantity: parseInt(formData.get('productQuantity'))
-    }
+  const addProduct = async (formData) => {
+  const newProduct = {
+    name: formData.get('productName'),
+    category: formData.get('productCategory'),
+    price: parseFloat(formData.get('productPrice')),
+    quantity: parseInt(formData.get('productQuantity'))
+  }
+
+  try {
+    await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/products/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newProduct)
+      }
+    )
+
+    const response = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+    )
+
+    const data = await response.json()
+
+    setProducts(data)
+
+    setShowProductModal(false)
+  } catch (error) {
+    console.error(error)
+  }
+}
     
     const updated = [...products]
     const idx = updated.findIndex(p => p.id === newProduct.id)
