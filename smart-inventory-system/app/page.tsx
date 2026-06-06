@@ -25,6 +25,13 @@ export default function Page() {
     .then(res => res.json())
     .then(data => setProducts(data))
     .catch(err => console.error(err))
+
+  fetch(
+    'https://smart-inventory-backend-xc1s.onrender.com/api/sales/'
+  )
+    .then(res => res.json())
+    .then(data => setSales(data))
+    .catch(err => console.error(err))
 }, [])
 
   const handleLogin = (e) => {
@@ -112,7 +119,7 @@ export default function Page() {
     }
 }
 
-  const recordSale = (formData) => {
+  const recordSale = async (formData) => {
   const productId = Number(formData.get('saleProduct'))
   const quantity = Number(formData.get('saleQuantity'))
 
@@ -130,29 +137,58 @@ export default function Page() {
     return
   }
 
-  const newSale = {
-    id: Math.random().toString(36).substr(2, 9),
-    date: new Date().toLocaleDateString(),
-    productName: product.name,
-    quantity,
-    price: Number(product.price),
-    total: Number(product.price) * quantity
+  try {
+    await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/sales/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          product: productId,
+          quantity: quantity,
+          price: Number(product.price),
+          total: Number(product.price) * quantity
+        })
+      }
+    )
+
+    await fetch(
+      `https://smart-inventory-backend-xc1s.onrender.com/api/products/${productId}/`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          quantity: Number(product.quantity) - quantity
+        })
+      }
+    )
+
+    const productsResponse = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+    )
+
+    const productsData = await productsResponse.json()
+
+    setProducts(productsData)
+
+    const salesResponse = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/sales/'
+    )
+
+    const salesData = await salesResponse.json()
+
+    setSales(salesData)
+
+    setShowSaleModal(false)
+
+  } catch (error) {
+    console.error(error)
+    alert('Failed to record sale')
   }
-
-  const updatedProducts = products.map(p =>
-    Number(p.id) === productId
-      ? { ...p, quantity: Number(p.quantity) - quantity }
-      : p
-  )
-
-  const updatedSales = [...sales, newSale]
-
-  setProducts(updatedProducts)
-  setSales(updatedSales)
-
-  localStorage.setItem('sales', JSON.stringify(updatedSales))
-
-  setShowSaleModal(false)
 }
 
   const stats = {
