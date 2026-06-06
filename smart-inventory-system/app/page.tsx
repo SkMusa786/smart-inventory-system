@@ -249,6 +249,50 @@ const deleteSale = async (id) => {
     alert('Failed to delete sale')
   }
 }
+const editProduct = async (product) => {
+  const name = prompt('Product Name', product.name)
+  if (!name) return
+
+  const category = prompt('Category', product.category)
+  if (!category) return
+
+  const price = prompt('Price', product.price)
+  if (!price) return
+
+  const quantity = prompt('Quantity', product.quantity)
+  if (!quantity) return
+
+  try {
+    await fetch(
+      `https://smart-inventory-backend-xc1s.onrender.com/api/products/${product.id}/`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          category,
+          price: Number(price),
+          quantity: Number(quantity)
+        })
+      }
+    )
+
+    const response = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+    )
+
+    const data = await response.json()
+
+    setProducts(data)
+
+  } catch (error) {
+    console.error(error)
+    alert('Failed to update product')
+  }
+}
+
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
@@ -348,13 +392,24 @@ const deleteSale = async (id) => {
             style={{padding: '10px 16px',background: '#3b82f6',color: 'white',border: 'none',borderRadius: '6px',cursor: 'pointer',fontWeight: 600,fontSize: '14px',marginBottom: '20px'}}> + Add Product </button>)}
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Actions</th></tr></thead>
-            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td><td>{user.role === 'owner' && (
+            <td>{user.role === 'owner' && (
+              <>
               <button
-              onClick={() => deleteProduct(p.id)}
-              style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>
-)}</td></tr>)}</tbody>
-          </table>
-        </div>
+      onClick={() => editProduct(p)}
+      style={{padding: '6px 12px',background: '#3b82f6',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px',marginRight: '8px'}}>Edit</button>
+      <button onClick={() => deleteProduct(p.id)} style={{
+        padding: '6px 12px',
+        background: '#ef4444',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '12px'
+      }}>Delete
+    </button>
+  </>
+)}
+</td>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'sales' ? 'block' : 'none'}}>
           <button onClick={() => setShowSaleModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ New Sale</button>
