@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Inventory</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-bg">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>Smart Inventory</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-section="overview">
+                    <span class="icon">📊</span>
+                    <span>Overview</span>
+                </button>
+                <button class="nav-item" id="productsBtn" data-section="products" style="display: none;">
+                    <span class="icon">📦</span>
+                    <span>Products</span>
+                </button>
+                <button class="nav-item" id="salesBtn" data-section="sales" style="display: none;">
+                    <span class="icon">💰</span>
+                    <span>Sales</span>
+                </button>
+                <button class="nav-item" data-section="analytics">
+                    <span class="icon">📈</span>
+                    <span>Analytics</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <p id="userDisplay"></p>
+                    <small id="roleDisplay"></small>
+                </div>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <h1 id="sectionTitle">Overview</h1>
+                <div class="top-bar-actions">
+                    <button id="addProductBtn" class="btn-primary" style="display: none;">+ Add Product</button>
+                </div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="content">
+                <!-- Overview Section -->
+                <section id="overview" class="section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-content">
+                                <h3>Total Products</h3>
+                                <p class="stat-value" id="totalProducts">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <h3>Total Stock</h3>
+                                <p class="stat-value" id="totalStock">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💵</div>
+                            <div class="stat-content">
+                                <h3>Total Revenue</h3>
+                                <p class="stat-value" id="totalRevenue">$0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-content">
+                                <h3>Low Stock</h3>
+                                <p class="stat-value" id="lowStock">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Recent Products</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overviewProductsTable">
+                            <tr class="empty-row">
+                                <td colspan="6" class="text-center">No products yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Products Section -->
+                <section id="products" class="section">
+                    <div class="section-header">
+                        <button id="newProductBtn" class="btn-primary">+ New Product</button>
+                        <input type="text" id="searchProducts" placeholder="Search products..." class="search-input">
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable">
+                            <tr class="empty-row">
+                                <td colspan="7" class="text-center">No products found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Sales Section -->
+                <section id="sales" class="section">
+                    <div class="section-header">
+                        <button id="newSaleBtn" class="btn-primary">+ Record Sale</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTable">
+                            <tr class="empty-row">
+                                <td colspan="5" class="text-center">No sales recorded</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics" class="section">
+                    <div class="analytics-grid">
+                        <div class="chart-container">
+                            <h3>Monthly Sales</h3>
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                        <div class="top-products-container">
+                            <h3>Top Products</h3>
+                            <div id="topProducts" class="products-list">
+                                <p class="empty-message">No sales data yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Product</h2>
+                <button type="button" class="btn-close">&times;</button>
+            </div>
+            <form id="productForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Product ID</label>
+                        <input type="text" id="productId" placeholder="e.g., P001" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" placeholder="e.g., Laptop" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Category</label>
+                        <input type="text" id="productCategory" placeholder="e.g., Electronics" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Price</label>
+                        <input type="number" id="productPrice" placeholder="0.00" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Quantity</label>
+                        <input type="number" id="productQuantity" placeholder="0" min="0" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary btn-close-modal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sale Modal -->
+    <div id="saleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Record Sale</h2>
+                <button type="button" class="btn-close">&times;</button>
+            </div>
+            <form id="saleForm" class="modal-form">
+                <div class="form-field">
+                    <label>Product</label>
+                    <select id="saleProduct" required>
+                        <option value="">Select a product...</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label>Quantity</label>
+                    <input type="number" id="saleQuantity" placeholder="0" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary btn-close-modal">Cancel</button>
+                    <button type="submit" class="btn-primary">Complete Sale</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

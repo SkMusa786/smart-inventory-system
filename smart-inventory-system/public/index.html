@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-bg">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="logo">Smart Inventory</h1>
+                <p class="tagline">Professional Inventory Management</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Enter username"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-login">Sign In</button>
+
+                <div id="errorMessage" class="error-msg" style="display: none;"></div>
+            </form>
+
+            <div class="divider">Demo Credentials</div>
+
+            <div class="demo-box">
+                <div class="demo-role">
+                    <strong>Cashier</strong>
+                    <small>cashier / cashier123</small>
+                </div>
+                <div class="demo-role">
+                    <strong>Owner</strong>
+                    <small>owner / owner123</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
