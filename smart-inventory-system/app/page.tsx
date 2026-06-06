@@ -83,12 +83,34 @@ export default function Page() {
 }
     
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
     if (!confirm('Delete this product?')) return
-    const updated = products.filter(p => p.id !== id)
-    setProducts(updated)
-    localStorage.setItem('products', JSON.stringify(updated))
-  }
+
+    try {
+        const response = await fetch(
+            `https://smart-inventory-backend-xc1s.onrender.com/api/products/${id}/`,
+            {
+                method: 'DELETE'
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error('Delete failed')
+        }
+
+        const refreshed = await fetch(
+            'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+        )
+
+        const data = await refreshed.json()
+
+        setProducts(data)
+
+    } catch (error) {
+        console.error(error)
+        alert('Failed to delete product')
+    }
+}
 
   const recordSale = (formData) => {
     const productId = formData.get('saleProduct')
