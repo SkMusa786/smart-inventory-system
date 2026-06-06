@@ -195,6 +195,32 @@ const deleteSale = async (id) => {
   if (!confirm('Delete this sale?')) return
 
   try {
+    const sale = sales.find(s => s.id === id)
+
+    if (!sale) {
+      alert('Sale not found')
+      return
+    }
+
+    const productResponse = await fetch(
+      `https://smart-inventory-backend-xc1s.onrender.com/api/products/${sale.product}/`
+    )
+
+    const product = await productResponse.json()
+
+    await fetch(
+      `https://smart-inventory-backend-xc1s.onrender.com/api/products/${sale.product}/`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          quantity: Number(product.quantity) + Number(sale.quantity)
+        })
+      }
+    )
+
     await fetch(
       `https://smart-inventory-backend-xc1s.onrender.com/api/sales/${id}/`,
       {
@@ -202,20 +228,27 @@ const deleteSale = async (id) => {
       }
     )
 
-    const response = await fetch(
+    const salesResponse = await fetch(
       'https://smart-inventory-backend-xc1s.onrender.com/api/sales/'
     )
 
-    const data = await response.json()
+    const salesData = await salesResponse.json()
 
-    setSales(data)
+    setSales(salesData)
+
+    const productsResponse = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
+    )
+
+    const productsData = await productsResponse.json()
+
+    setProducts(productsData)
 
   } catch (error) {
     console.error(error)
     alert('Failed to delete sale')
   }
 }
-
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
