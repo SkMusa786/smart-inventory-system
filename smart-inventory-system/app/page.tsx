@@ -293,6 +293,51 @@ const editProduct = async (product) => {
   }
 }
 
+const today = new Date().toISOString().split('T')[0]
+
+const todaySales = sales.filter(
+  s => s.created_at?.startsWith(today)
+).length
+
+const sellerMap = {}
+
+sales.forEach(s => {
+  sellerMap[s.product_name] =
+    (sellerMap[s.product_name] || 0) + Number(s.quantity)
+})
+
+const bestSeller =
+  Object.keys(sellerMap).length > 0
+    ? Object.entries(sellerMap)
+        .sort((a, b) => b[1] - a[1])[0][0]
+    : 'No Sales'
+
+const downloadExcel = () => {
+  let csv =
+    'Date,Product,Quantity,Price,Total\n'
+
+  sales.forEach(s => {
+    csv += `${s.created_at},${s.product_name},${s.quantity},${s.price},${s.total}\n`
+  })
+
+  const blob = new Blob([csv], {
+    type: 'text/csv'
+  })
+
+  const url = window.URL.createObjectURL(blob)
+
+  const a = document.createElement('a')
+
+  a.href = url
+  a.download = 'sales-report.csv'
+  a.click()
+}
+
+const downloadPDF = () => {
+  window.print()
+}
+}
+
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
@@ -474,10 +519,56 @@ const editProduct = async (product) => {
         </div>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'analytics' ? 'block' : 'none'}}>
-          <h3 style={{color: '#e5e7eb', marginBottom: '20px'}}>Sales Analytics</h3>
-          {sales.length === 0 ? <p style={{color: '#9ca3af'}}>No sales data</p> : <p style={{color: '#9ca3af'}}>Total Sales: {sales.length}</p>}
-        </div>
-      </div>
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px'}}>
+            <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
+              <h3 style={{color: '#9ca3af'}}>Today's Sales</h3>
+              <p style={{fontSize: '32px', color: '#3b82f6', fontWeight: 'bold'}}>
+                {todaySales}
+              </p>
+            </div>
+            
+            <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
+              <h3 style={{color: '#9ca3af'}}>Best Seller</h3>
+              <p style={{fontSize: '24px', color: '#10b981', fontWeight: 'bold'}}>
+                {bestSeller}
+              </p>
+            </div>
+            
+            <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
+              <h3 style={{color: '#9ca3af'}}>Total Revenue</h3>
+              <p style={{fontSize: '24px', color: '#f59e0b', fontWeight: 'bold'}}>
+                ${Number(stats.totalRevenue).toFixed(2)}
+              </p>
+            </div>
+          </div>
+         <div style={{display: 'flex', gap: '20px'}}>
+           <button
+           onClick={downloadExcel}
+           style={{
+            padding: '12px 20px',
+            background: '#10b981',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer'
+          }}>
+            Download Excel Report
+            </button>
+            
+            <button
+            onClick={downloadPDF}
+            style={{
+              padding: '12px 20px',
+              background: '#ef4444',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}>
+              Download PDF Report
+            </button>
+            </div>
+          </div>
 
       {showProductModal && (
         <div className="modal">
