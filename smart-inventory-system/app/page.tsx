@@ -113,35 +113,47 @@ export default function Page() {
 }
 
   const recordSale = (formData) => {
-    const productId = formData.get('saleProduct')
-    const quantity = parseInt(formData.get('saleQuantity'))
-    
-    const product = products.find(p => p.id === productId)
-    if (!product || quantity > product.quantity) {
-      alert('Invalid sale')
-      return
-    }
+  const productId = Number(formData.get('saleProduct'))
+  const quantity = Number(formData.get('saleQuantity'))
 
-    const newSale = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toLocaleDateString(),
-      productName: product.name,
-      quantity,
-      price: product.price,
-      total: product.price * quantity
-    }
-    
-    const updatedProducts = products.map(p => 
-      p.id === productId ? {...p, quantity: p.quantity - quantity} : p
-    )
-    const updatedSales = [...sales, newSale]
-    
-    setProducts(updatedProducts)
-    setSales(updatedSales)
-    localStorage.setItem('products', JSON.stringify(updatedProducts))
-    localStorage.setItem('sales', JSON.stringify(updatedSales))
-    setShowSaleModal(false)
+  const product = products.find(
+    p => Number(p.id) === productId
+  )
+
+  if (!product) {
+    alert('Product not found')
+    return
   }
+
+  if (quantity > Number(product.quantity)) {
+    alert('Not enough stock')
+    return
+  }
+
+  const newSale = {
+    id: Math.random().toString(36).substr(2, 9),
+    date: new Date().toLocaleDateString(),
+    productName: product.name,
+    quantity,
+    price: Number(product.price),
+    total: Number(product.price) * quantity
+  }
+
+  const updatedProducts = products.map(p =>
+    Number(p.id) === productId
+      ? { ...p, quantity: Number(p.quantity) - quantity }
+      : p
+  )
+
+  const updatedSales = [...sales, newSale]
+
+  setProducts(updatedProducts)
+  setSales(updatedSales)
+
+  localStorage.setItem('sales', JSON.stringify(updatedSales))
+
+  setShowSaleModal(false)
+}
 
   const stats = {
     totalProducts: products.length,
