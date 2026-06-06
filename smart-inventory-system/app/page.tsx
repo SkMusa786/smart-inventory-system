@@ -206,7 +206,7 @@ export default function Page() {
           </div>
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th></tr></thead>
-            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${p.price.toFixed(2)}</td><td>{p.quantity}</td></tr>)}</tbody>
+            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td></tr>)}</tbody>
           </table>
         </div>
 
@@ -214,7 +214,7 @@ export default function Page() {
           <button onClick={() => setShowProductModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ Add Product</button>
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Actions</th></tr></thead>
-            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${p.price.toFixed(2)}</td><td>{p.quantity}</td><td><button onClick={() => deleteProduct(p.id)} style={{padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px'}}>Delete</button></td></tr>)}</tbody>
+            <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td><td><button onClick={() => deleteProduct(p.id)} style={{padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px'}}>Delete</button></td></tr>)}</tbody>
           </table>
         </div>
 
@@ -222,7 +222,7 @@ export default function Page() {
           <button onClick={() => setShowSaleModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ New Sale</button>
           <table>
             <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
-            <tbody>{sales.map(s => <tr key={s.id}><td>{s.date}</td><td>{s.productName}</td><td>{s.quantity}</td><td>${s.price.toFixed(2)}</td><td>${s.total.toFixed(2)}</td></tr>)}</tbody>
+            <tbody>{sales.map(s => <tr key={s.id}><td>{s.date}</td><td>{s.productName}</td><td>{s.quantity}</td><td>${Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td></tr>)}</tbody>
           </table>
         </div>
 
