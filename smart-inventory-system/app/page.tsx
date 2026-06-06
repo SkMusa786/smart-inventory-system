@@ -192,11 +192,10 @@ export default function Page() {
 }
 
   const stats = {
-    totalProducts: products.length,
-    totalStock: products.reduce((sum, p) => sum + p.quantity, 0),
-    totalRevenue: sales.reduce((sum, s) => sum + s.total, 0),
-    lowStock: products.filter(p => p.quantity < 10 && p.quantity > 0).length
-  }
+  totalProducts: products.length,
+  totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
+  totalRevenue: sales.reduce((sum, s) => sum + Number(s.total), 0)
+}
 
   if (!user) {
     return (
@@ -271,7 +270,7 @@ export default function Page() {
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'overview' ? 'block' : 'none'}}>
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px'}}>
-            {[{label: 'Total Products', value: stats.totalProducts}, {label: 'Total Stock', value: stats.totalStock}, {label: 'Total Revenue', value: `$${stats.totalRevenue.toFixed(2)}`}, {label: 'Low Stock', value: stats.lowStock}].map(stat => (
+            {[{label: 'Total Products', value: stats.totalProducts}, {label: 'Total Stock', value: stats.totalStock}, {label: 'Total Revenue', value: `$${Number(stats.totalRevenue).toFixed(2)}`}, {label: 'Low Stock', value: stats.lowStock}].map(stat => (
               <div key={stat.label} style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px', border: '1px solid #252d3d'}}>
                 <h3 style={{fontSize: '13px', color: '#9ca3af', marginBottom: '12px'}}>{stat.label}</h3>
                 <p style={{fontSize: '28px', fontWeight: 700, color: '#3b82f6'}}>{stat.value}</p>
