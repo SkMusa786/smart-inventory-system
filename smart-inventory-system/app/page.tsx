@@ -191,6 +191,31 @@ export default function Page() {
   }
 }
 
+const deleteSale = async (id) => {
+  if (!confirm('Delete this sale?')) return
+
+  try {
+    await fetch(
+      `https://smart-inventory-backend-xc1s.onrender.com/api/sales/${id}/`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    const response = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/sales/'
+    )
+
+    const data = await response.json()
+
+    setSales(data)
+
+  } catch (error) {
+    console.error(error)
+    alert('Failed to delete sale')
+  }
+}
+
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
@@ -301,8 +326,8 @@ export default function Page() {
         <div style={{flex: 1, padding: '30px', display: currentSection === 'sales' ? 'block' : 'none'}}>
           <button onClick={() => setShowSaleModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ New Sale</button>
           <table>
-            <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
-            <tbody>{sales.map(s => <tr key={s.id}><td>{s.date}</td><td>{s.productName}</td><td>{s.quantity}</td><td>${Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td></tr>)}</tbody>
+            <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th>{user.role === 'owner' && <th>Action</th>}</tr></thead>
+            <tbody>{sales.map(s =><tr key={s.id}><td>{s.date}</td><td>{s.productName}</td><td>{s.quantity}</td><td>${Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td><td>{user.role === 'owner' && (<button onClick={() => deleteSale(s.id)}style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>)}</td></tr>)}</tbody>
           </table>
         </div>
 
