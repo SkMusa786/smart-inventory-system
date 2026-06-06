@@ -249,8 +249,10 @@ export default function Page() {
         </div>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'products' ? 'block' : 'none'}}>
-          {user.role === 'owner' && (
-            <button onClick={() => setShowProductModal(true)}> + Add Product </button>)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ Add Product</button>
+          {user.role === 'owner' && ( 
+            <button
+            onClick={() => setShowProductModal(true)}
+            style={{padding: '10px 16px',background: '#3b82f6',color: 'white',border: 'none',borderRadius: '6px',cursor: 'pointer',fontWeight: 600,fontSize: '14px',marginBottom: '20px'}}> + Add Product </button>)}
           <table>
             <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Qty</th><th>Actions</th></tr></thead>
             <tbody>{products.map(p => <tr key={p.id}><td>{p.id}</td><td>{p.name}</td><td>{p.category}</td><td>${Number(p.price).toFixed(2)}</td><td>{p.quantity}</td><td>{user.role === 'owner' && (
