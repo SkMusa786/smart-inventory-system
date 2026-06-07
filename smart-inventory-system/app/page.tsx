@@ -569,8 +569,8 @@ const filteredProducts = products.filter(p =>
         <div style={{flex: 1, padding: '30px', display: currentSection === 'sales' ? 'block' : 'none'}}>
           <button onClick={() => setShowSaleModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ New Sale</button>
           <table>
-            <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th>{user.role === 'owner' && <th>Action</th>}</tr></thead>
-            <tbody>{sales.map(s =><tr key={s.id}><td>{new Date(s.created_at).toLocaleDateString()}</td><td>{s.product_name}</td><td>{s.quantity}</td><td>₹{Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td><td>{user.role === 'owner' && (<button onClick={() => deleteSale(s.id)}style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>)}</td></tr>)}</tbody>
+            <thead><tr><th>Sale ID</th><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th>{user.role === 'owner' && <th>Action</th>}</tr></thead>
+            <tbody>{sales.map(s => <tr key={s.id}><td>{s.id}</td><td>{new Date(s.created_at).toLocaleDateString()}</td><td>{s.product_name}</td><td>{s.quantity}</td><td>₹{Number(s.price).toFixed(2)}</td><td>₹{Number(s.total).toFixed(2)}</td><td>{user.role === 'owner' && (<button onClick={() => deleteSale(s.id)} style={{padding: '6px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px'}}>Delete</button>)}</td></tr>)}</tbody>
           </table>
         </div>
 
