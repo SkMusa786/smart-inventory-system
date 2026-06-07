@@ -10,6 +10,7 @@ export default function Page() {
   const [showProductModal, setShowProductModal] = useState(false)
   const [showSaleModal, setShowSaleModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedDate, setSelectedDate] = useState('')
   const formRef = useRef(null)
 
   // Load data from localStorage on mount
@@ -381,6 +382,17 @@ const filteredProducts = products.filter(p =>
   p.category.toLowerCase().includes(searchTerm.toLowerCase())
 )
 
+const filteredSales = selectedDate
+  ? sales.filter(
+      s => s.created_at.split('T')[0] === selectedDate
+    )
+  : sales
+
+const selectedDateRevenue = filteredSales.reduce(
+  (sum, s) => sum + Number(s.total),
+  0
+)
+
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
@@ -575,57 +587,103 @@ const filteredProducts = products.filter(p =>
         </div>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'analytics' ? 'block' : 'none'}}>
+          <h3 style={{color: '#e5e7eb', marginBottom: '20px'}}>
+            Sales Analytics
+            </h3>
+            
+            <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            style={{
+              padding: '10px',
+              marginBottom: '20px',
+              background: '#1a1f2e',
+              color: '#e5e7eb',
+              border: '1px solid #252d3d',
+             borderRadius: '6px'
+            }}/>
+            
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px'}}>
             <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
               <h3 style={{color: '#9ca3af'}}>Today's Sales</h3>
               <p style={{fontSize: '32px', color: '#3b82f6', fontWeight: 'bold'}}>
                 {todaySales}
-              </p>
+                </p>
             </div>
-            
-            <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
-              <h3 style={{color: '#9ca3af'}}>Best Seller</h3>
-              <p style={{fontSize: '24px', color: '#10b981', fontWeight: 'bold'}}>
-                {bestSeller}
-              </p>
-            </div>
-            
-            <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
-              <h3 style={{color: '#9ca3af'}}>Total Revenue</h3>
-              <p style={{fontSize: '24px', color: '#f59e0b', fontWeight: 'bold'}}>
-                ₹{Number(stats.totalRevenue).toFixed(2)}
-              </p>
-            </div>
-          </div>
-         <div style={{display: 'flex', gap: '20px'}}>
-           <button
-           onClick={downloadExcel}
-           style={{
-            padding: '12px 20px',
-            background: '#10b981',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}>
-            Download Excel Report
-            </button>
-            
-            <button
-            onClick={downloadPDF}
-            style={{
-              padding: '12px 20px',
-              background: '#ef4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer'
-            }}>
-              Download PDF Report
-            </button>
-            </div>
-          </div>
-          </div>
+
+        <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
+          <h3 style={{color: '#9ca3af'}}>Best Seller</h3>
+          <p style={{fontSize: '24px', color: '#10b981', fontWeight: 'bold'}}>
+          {bestSeller}
+        </p>
+        </div>
+
+    <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
+      <h3 style={{color: '#9ca3af'}}>
+        {selectedDate ? 'Selected Date Revenue' : 'Total Revenue'}
+      </h3>
+      <p style={{fontSize: '24px', color: '#f59e0b', fontWeight: 'bold'}}>
+        ₹{selectedDate ? selectedDateRevenue.toFixed(2) : Number(stats.totalRevenue).toFixed(2)}
+      </p>
+    </div>
+  </div>
+
+  <div style={{display: 'flex', gap: '20px', marginBottom: '30px'}}>
+    <button
+      onClick={downloadExcel}
+      style={{
+        padding: '12px 20px',
+        background: '#10b981',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+      }}
+    >
+      Download Excel Report
+    </button>
+
+    <button
+      onClick={downloadPDF}
+      style={{
+        padding: '12px 20px',
+        background: '#ef4444',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer'
+      }}
+    >
+      Download PDF Report
+    </button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sale ID</th>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {filteredSales.map(s => (
+        <tr key={s.id}>
+          <td>{s.id}</td>
+          <td>{new Date(s.created_at).toLocaleDateString()}</td>
+          <td>{s.product_name}</td>
+          <td>{s.quantity}</td>
+          <td>₹{Number(s.total).toFixed(2)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+</div>
 
       {showProductModal && (
         <div className="modal">
