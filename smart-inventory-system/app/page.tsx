@@ -14,11 +14,15 @@ export default function Page() {
 
   // Load data from localStorage on mount
  useEffect(() => {
-  const savedUser = localStorage.getItem('user')
+  const savedUser =
+  localStorage.getItem('user')
 
-  if (savedUser) {
-    setUser(JSON.parse(savedUser))
-  }
+const token =
+  localStorage.getItem('token')
+
+if (savedUser && token) {
+  setUser(JSON.parse(savedUser))
+}
 
   fetch(
     'https://smart-inventory-backend-xc1s.onrender.com/api/products/'
@@ -35,25 +39,59 @@ export default function Page() {
     .catch(err => console.error(err))
 }, [])
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    const username = formData.get('username')
-    const password = formData.get('password')
+  const handleLogin = async (e) => {
+  e.preventDefault()
 
-    if ((username === 'cashier' && password === 'cashier123') || 
-        (username === 'owner' && password === 'owner123')) {
-      const userData = { username, role: username === 'cashier' ? 'cashier' : 'owner' }
-      setUser(userData)
-      localStorage.setItem('user', JSON.stringify(userData))
-    } else {
-      alert('Invalid credentials')
+  const formData = new FormData(e.target)
+
+  const username = formData.get('username')
+  const password = formData.get('password')
+
+  try {
+    const response = await fetch(
+      'https://smart-inventory-backend-xc1s.onrender.com/api/login/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.error)
+      return
     }
+
+    setUser(data)
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify(data)
+    )
+
+    localStorage.setItem(
+      'token',
+      data.token
+    )
+
+  } catch (error) {
+    console.error(error)
+    alert('Login failed')
   }
+}
 
   const logout = () => {
   setUser(null)
+
   localStorage.removeItem('user')
+  localStorage.removeItem('token')
 }
 
   const addProduct = async (formData) => {
