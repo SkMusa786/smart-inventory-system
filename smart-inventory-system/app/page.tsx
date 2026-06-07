@@ -461,7 +461,7 @@ const filteredProducts = products.filter(p =>
 
         <div style={{flex: 1, padding: '30px', display: currentSection === 'overview' ? 'block' : 'none'}}>
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px'}}>
-            {[{label: 'Total Products', value: stats.totalProducts}, {label: 'Total Stock', value: stats.totalStock}, {label: 'Total Revenue', value: `$${Number(stats.totalRevenue).toFixed(2)}`}, {label: 'Low Stock', value: stats.lowStock}].map(stat => (
+            {[{label: 'Total Products', value: stats.totalProducts}, {label: 'Total Stock', value: stats.totalStock}, {label: 'Total Revenue', value: `₹${Number(stats.totalRevenue).toFixed(2)}`}, {label: 'Low Stock', value: stats.lowStock}].map(stat => (
               <div key={stat.label} style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px', border: '1px solid #252d3d'}}>
                 <h3 style={{fontSize: '13px', color: '#9ca3af', marginBottom: '12px'}}>{stat.label}</h3>
                 <p style={{fontSize: '28px', fontWeight: 700, color: '#3b82f6'}}>{stat.value}</p>
@@ -521,7 +521,7 @@ const filteredProducts = products.filter(p =>
           <td>{p.id}</td>
           <td>{p.name}</td>
           <td>{p.category}</td>
-          <td>${Number(p.price).toFixed(2)}</td>
+          <td>₹{Number(p.price).toFixed(2)}</td>
           <td style={{color: Number(p.quantity) < 10 ? '#ef4444' : '#e5e7eb', fontWeight: Number(p.quantity) < 10 ? 'bold' : 'normal'}}>{p.quantity} </td>
 
           <td>
@@ -570,7 +570,7 @@ const filteredProducts = products.filter(p =>
           <button onClick={() => setShowSaleModal(true)} style={{padding: '10px 16px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', marginBottom: '20px'}}>+ New Sale</button>
           <table>
             <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th>{user.role === 'owner' && <th>Action</th>}</tr></thead>
-            <tbody>{sales.map(s =><tr key={s.id}><td>{new Date(s.created_at).toLocaleDateString()}</td><td>{s.product_name}</td><td>{s.quantity}</td><td>${Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td><td>{user.role === 'owner' && (<button onClick={() => deleteSale(s.id)}style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>)}</td></tr>)}</tbody>
+            <tbody>{sales.map(s =><tr key={s.id}><td>{new Date(s.created_at).toLocaleDateString()}</td><td>{s.product_name}</td><td>{s.quantity}</td><td>₹{Number(s.price).toFixed(2)}</td><td>${Number(s.total).toFixed(2)}</td><td>{user.role === 'owner' && (<button onClick={() => deleteSale(s.id)}style={{padding: '6px 12px',background: '#ef4444',color: 'white',border: 'none',borderRadius: '4px',cursor: 'pointer',fontSize: '12px'}}>Delete</button>)}</td></tr>)}</tbody>
           </table>
         </div>
 
@@ -593,7 +593,7 @@ const filteredProducts = products.filter(p =>
             <div style={{background: '#1a1f2e', padding: '20px', borderRadius: '8px'}}>
               <h3 style={{color: '#9ca3af'}}>Total Revenue</h3>
               <p style={{fontSize: '24px', color: '#f59e0b', fontWeight: 'bold'}}>
-                ${Number(stats.totalRevenue).toFixed(2)}
+                ₹{Number(stats.totalRevenue).toFixed(2)}
               </p>
             </div>
           </div>
