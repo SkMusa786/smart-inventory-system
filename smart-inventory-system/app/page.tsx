@@ -9,6 +9,7 @@ export default function Page() {
   const [currentSection, setCurrentSection] = useState('overview')
   const [showProductModal, setShowProductModal] = useState(false)
   const [showSaleModal, setShowSaleModal] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const formRef = useRef(null)
 
   // Load data from localStorage on mount
@@ -336,6 +337,12 @@ const downloadExcel = () => {
 const downloadPDF = () => {
   window.print()
 }
+
+const filteredProducts = products.filter(p =>
+  p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  p.category.toLowerCase().includes(searchTerm.toLowerCase())
+)
+
   const stats = {
   totalProducts: products.length,
   totalStock: products.reduce((sum, p) => sum + Number(p.quantity), 0),
@@ -444,7 +451,20 @@ const downloadPDF = () => {
       + Add Product
     </button>
   )}
-
+  <input
+  type="text"
+  placeholder="Search products..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  style={{
+    width: '100%',
+    padding: '12px',
+    marginBottom: '20px',
+    background: '#1a1f2e',
+    border: '1px solid #252d3d',
+    borderRadius: '6px',
+    color: '#e5e7eb'
+  }}/>
   <table>
     <thead>
       <tr>
@@ -458,7 +478,7 @@ const downloadPDF = () => {
     </thead>
 
     <tbody>
-      {products.map(p => (
+      {filteredProducts.map(p => (
         <tr key={p.id}>
           <td>{p.id}</td>
           <td>{p.name}</td>
